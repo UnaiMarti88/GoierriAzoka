@@ -28,6 +28,7 @@ if (count($_POST) > 0) {
     }
 }
 die;
+
 function checkInput($inputValue)
 {
 
@@ -192,13 +193,23 @@ function checkIfAlreadyHasAnswered($courseId, $email)
 
 function changeConfig($inputValue)
 {
-    //XML konfigurazioa
-    $config = simplexml_load_file(APP_DIR . '/conf.xml');
+   // XML konfigurazioa
+$config = simplexml_load_file(APP_DIR . '/conf.xml');
 
-    //TODO: GARATZEKO
+// Formulariotik kolorearen balioak lortzea
+$mainColor = $inputValue['mainColor'] ?? '#a1a2a3';
+$footerColor = $inputValue['footerColor'] ?? '#555555';
 
-    //Orri nagusira redirekzioa egiteko
-    $location = HREF_APP_DIR . "/src/views/main/index.php";
-    
-    header('Location: '. $location);
+// XML fitxategian balioak eguneratzea
+$config->mainColor = $mainColor;
+$config->footerColor = $footerColor;
+
+// Aldaketak XML fitxategian gordetzea
+$config->asXML(APP_DIR . '/conf.xml');
+
+// Orri nagusira redirekzioa egiteko
+$location = HREF_APP_DIR . "/src/views/main/index.php";
+
+header('Location: '. $location);
+
 }

@@ -3,7 +3,6 @@
 <?php
 session_start();
 
-
 define('APP_DIR', $_SERVER['DOCUMENT_ROOT'] . $APP_DIR); //Aplikazioaren karpeta edozein lekutatik atzitzeko.
 define('HREF_APP_DIR', $APP_DIR); //Aplikazioaren views karpeta edozein lekutatik deitzeko
 define('HREF_VIEWS_DIR', $APP_DIR . '/src/views'); //Aplikazioaren views karpeta edozein lekutatik deitzeko
@@ -29,11 +28,10 @@ writeLog("Orria kargatu da", ["url" => $actual_link, "get" => json_encode($_GET)
     <!-- External -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <?php
-    //XMLko konfiguraziotik hartzen dute informazioa
-
-    $mainColor = "#a1a2a3";
-    $footerColor = "#555555";
-
+    // Koloreak conf.xml fitxategitik irakurtzea
+    $xml = simplexml_load_file(APP_DIR . '/conf.xml');
+    $mainColor = (string)$xml->mainColor;
+    $footerColor = (string)$xml->footerColor;
     ?>
     <style>
         :root {

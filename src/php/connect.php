@@ -2,12 +2,24 @@
 
 function getEnvVariables()
 {
-    $env = parse_ini_file(APP_DIR . '/.env');
+    // Asignar el resultado de parse_ini_file a la variable $env
+    $env = parse_ini_file('C:/xampp/htdocs/ML/GoierriAzoka/.env');
 
-    $servername = $env["SERVER_NAME"];
-    $dbName = $env["DB_NAME"];
-    $username = $env["USERNAME"];
-    $password = $env["PASSWORD"];
+    // Verificar si parse_ini_file falló al leer el archivo
+    if ($env === false) {
+        die("Error al cargar el archivo .env");
+    }
+
+    // Asignar las variables de entorno
+    $servername = $env["SERVER_NAME"] ?? null;
+    $dbName = $env["DB_NAME"] ?? null;
+    $username = $env["USERNAME"] ?? null;
+    $password = $env["PASSWORD"] ?? null;
+
+    // Verificar si faltan algunas variables
+    if (!$servername || !$dbName || !$username || !$password) {
+        die("Faltan variables de entorno en el archivo .env");
+    }
 
     return [
         $servername,
@@ -16,6 +28,7 @@ function getEnvVariables()
         $password
     ];
 }
+
 
 function getConnection(){
     
@@ -27,72 +40,52 @@ function getConnection(){
     $password = $envArray[3];
 
     $conn = new mysqli($servername, $username, $password, $dbName);
+    if ($conn->connect_error) {
+        die("Conexión fallida: " . $conn->connect_error);
+    }
     return $conn;
 }
 
 function getZikloak()
 {
-    $envArray = getEnvVariables();
+    $conn = getConnection();
 
-    $servername = $envArray[0];
-    $dbName = $envArray[1];
-    $username = $envArray[2];
-    $password = $envArray[3];
-
-    $conn = new mysqli($servername, $username, $password, $dbName);
-
-    if ($conn->connect_error) {
-        die("Conexión fallida: " . $conn->connect_error);
-    }
-
-    $sql = "SELECT * FROM " . $dbName . ".zikloak ORDER BY laburbildura ASC";
+    $sql = "SELECT * FROM `8.entrega`.zikloak ORDER BY laburbildura ASC";
     $result = $conn->query($sql);
+
+    if (!$result) {
+        die("Error en la consulta: " . $conn->error);
+    }
 
     return $result;
 }
+
 function getZikloa($id)
 {
-    $envArray = getEnvVariables();
+    $conn = getConnection();
 
-    $servername = $envArray[0];
-    $dbName = $envArray[1];
-    $username = $envArray[2];
-    $password = $envArray[3];
-
-    $conn = new mysqli($servername, $username, $password, $dbName);
-
-    if ($conn->connect_error) {
-        die("Conexión fallida: " . $conn->connect_error);
-    }
-
-    $sql = "SELECT * FROM " . $dbName . ".zikloak WHERE id=".$id." ORDER BY laburbildura ASC";
-
+    $sql = "SELECT * FROM `8.entrega`.zikloak WHERE id=".$id." ORDER BY laburbildura ASC";
     $result = $conn->query($sql);
+
+    if (!$result) {
+        die("Error en la consulta: " . $conn->error);
+    }
 
     return $result;
 }
 
 function getUserIdByEmail($email)
 {
-
-    $envArray = getEnvVariables();
-
-    $servername = $envArray[0];
-    $dbName = $envArray[1];
-    $username = $envArray[2];
-    $password = $envArray[3];
-
-    $conn = new mysqli($servername, $username, $password, $dbName);
-
-    if ($conn->connect_error) {
-        die("Conexión fallida: " . $conn->connect_error);
-    }
+    $conn = getConnection();
 
     $uname = getUsernameFromEmail($email);
 
-    $sql = "SELECT id FROM " . $dbName . ".erabiltzaileak WHERE email='".$uname."';";
-
+    $sql = "SELECT id FROM `8.entrega`.erabiltzaileak WHERE email='".$uname."';";
     $result = $conn->query($sql);
+
+    if (!$result) {
+        die("Error en la consulta: " . $conn->error);
+    }
 
     $conn->close();
 
@@ -102,7 +95,6 @@ function getUserIdByEmail($email)
     }
 
     return null;
-
 }
 
 function getUsernameFromEmail($email){
@@ -113,22 +105,14 @@ function getUsernameFromEmail($email){
 
 function checkIfAlreadyHasAnsweredCourse($courseId, $userId){
 
-    $envArray = getEnvVariables();
+    $conn = getConnection();
 
-    $servername = $envArray[0];
-    $dbName = $envArray[1];
-    $username = $envArray[2];
-    $password = $envArray[3];
-
-    $conn = new mysqli($servername, $username, $password, $dbName);
-
-    if ($conn->connect_error) {
-        die("Conexión fallida: " . $conn->connect_error);
-    }
-
-    $sql = "SELECT id FROM " . $dbName . ".balorazioa WHERE ziklo_id='".$courseId."' AND erabiltzaile_id='".$userId."';";
-
+    $sql = "SELECT id FROM `8.entrega`.balorazioa WHERE ziklo_id='".$courseId."' AND erabiltzaile_id='".$userId."';";
     $result = $conn->query($sql);
+
+    if (!$result) {
+        die("Error en la consulta: " . $conn->error);
+    }
 
     $conn->close();
 
@@ -137,28 +121,18 @@ function checkIfAlreadyHasAnsweredCourse($courseId, $userId){
     }
 
     return false;
-
 }
-
 
 function checkIfAnswerIsCorrect($answeredOption, $courseId){
 
-    $envArray = getEnvVariables();
+    $conn = getConnection();
 
-    $servername = $envArray[0];
-    $dbName = $envArray[1];
-    $username = $envArray[2];
-    $password = $envArray[3];
-
-    $conn = new mysqli($servername, $username, $password, $dbName);
-
-    if ($conn->connect_error) {
-        die("Conexión fallida: " . $conn->connect_error);
-    }
-
-    $sql = "SELECT erantzun_zuzena FROM " . $dbName . ".zikloak WHERE id='".$courseId."';";
-
+    $sql = "SELECT erantzun_zuzena FROM `8.entrega`.zikloak WHERE id='".$courseId."';";
     $result = $conn->query($sql);
+
+    if (!$result) {
+        die("Error en la consulta: " . $conn->error);
+    }
 
     $conn->close();
 
@@ -168,59 +142,40 @@ function checkIfAnswerIsCorrect($answeredOption, $courseId){
     }
 
     return 0;
-
 }
+
 function saveAnswerInDb($courseId, $userId, $valoration, $answerIsCorrect, $valid, $teacher){
 
-    $envArray = getEnvVariables();
+    $conn = getConnection();
 
-    $servername = $envArray[0];
-    $dbName = $envArray[1];
-    $username = $envArray[2];
-    $password = $envArray[3];
-
-    $conn = new mysqli($servername, $username, $password, $dbName);
-
-    if ($conn->connect_error) {
-        die("Conexión fallida: " . $conn->connect_error);
-    }
-
-    $sql = "INSERT INTO balorazioa (id, ziklo_id, erabiltzaile_id, balorazioa, zuzen_erantzun, valid, teacher) VALUES (NULL, '".$courseId."','".$userId."','".$valoration."','".$answerIsCorrect."','".$valid."','".$teacher."')";
-
+    $sql = "INSERT INTO `8.entrega`.balorazioa (id, ziklo_id, erabiltzaile_id, balorazioa, zuzen_erantzun, valid, teacher) VALUES (NULL, '".$courseId."','".$userId."','".$valoration."','".$answerIsCorrect."','".$valid."','".$teacher."')";
     $result = $conn->query($sql);
+
+    if (!$result) {
+        die("Error en la consulta: " . $conn->error);
+    }
 
     $conn->close();
 
     return true;
-
 }
 
 function insertUserInDb($email){
 
-    $envArray = getEnvVariables();
-
-    $servername = $envArray[0];
-    $dbName = $envArray[1];
-    $username = $envArray[2];
-    $password = $envArray[3];
-
-    $conn = new mysqli($servername, $username, $password, $dbName);
-
-    if ($conn->connect_error) {
-        die("Conexión fallida: " . $conn->connect_error);
-    }
+    $conn = getConnection();
 
     $uname = getUsernameFromEmail($email);
 
-    $sql = "INSERT INTO erabiltzaileak (email) VALUES ('".$uname."')";
-
+    $sql = "INSERT INTO `8.entrega`.erabiltzaileak (email) VALUES ('".$uname."')";
     $result = $conn->query($sql);
+
+    if (!$result) {
+        die("Error en la consulta: " . $conn->error);
+    }
 
     $conn->close();
 
     return getUserIdByEmail($email);
-
 }
-
 
 ?>

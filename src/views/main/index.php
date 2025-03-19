@@ -6,12 +6,12 @@ $APP_DIR = $env["APP_DIR"];
 
 require_once($_SERVER["DOCUMENT_ROOT"] . $APP_DIR . '/src/views/parts/layouts/layoutTop.php'); //Aplikazioaren karpeta edozein lekutatik atzitzeko.
 
-require_once(APP_DIR . '/src/views/parts/sidebar.php');
+require_once($_SERVER["DOCUMENT_ROOT"] . $APP_DIR . '/src/views/parts/sidebar.php');
 
-require_once(APP_DIR  . '/src/views/parts/header.php');
+require_once($_SERVER["DOCUMENT_ROOT"] . $APP_DIR  . '/src/views/parts/header.php');
 
 //DBra joan
-require_once(APP_DIR . '/src/php/connect.php');
+require_once($_SERVER["DOCUMENT_ROOT"] . $APP_DIR . '/src/php/connect.php');
 
 //scanned aldagaia badator estekan formularioa erakutsiko du
 $scanned = true;
@@ -153,5 +153,5 @@ if ($result->num_rows > 0) {
         echo "<br>";
     }
 }
-require_once(APP_DIR  . '/src//views/parts/layouts/layoutBottom.php');
+require_once($_SERVER["DOCUMENT_ROOT"] . $APP_DIR  . '/src//views/parts/layouts/layoutBottom.php');
 ?>
