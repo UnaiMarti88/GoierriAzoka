@@ -1,0 +1,12 @@
+<FilesMatch "EmailZerrenda.txt">
+   Order Allow,Deny
+   Deny from all
+</FilesMatch>
+<FilesMatch "emailak.txt">
+   Order Allow,Deny
+   Deny from all
+</FilesMatch>
+<FilesMatch "goierriazoka.sql">
+   Order Allow,Deny
+   Deny from all
+</FilesMatch>
