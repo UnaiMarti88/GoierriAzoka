@@ -1,6 +1,6 @@
 <?php
 
-$env = parse_ini_file(__DIR__ . '/../../../.env');
+$env = parse_ini_file(__DIR__ . '/../../../.env_toCopy');
 
 $APP_DIR = $env["APP_DIR"];
 

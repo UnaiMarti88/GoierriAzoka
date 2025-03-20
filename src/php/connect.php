@@ -3,7 +3,7 @@
 function getEnvVariables()
 {
     // Asignar el resultado de parse_ini_file a la variable $env
-    $env = parse_ini_file('C:/xampp/htdocs/ML/GoierriAzoka/.env');
+    $env = parse_ini_file(APP_DIR . '/.env_toCopy');
 
     // Verificar si parse_ini_file falló al leer el archivo
     if ($env === false) {
